@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>User details</title>
+		
+		{% load static %}
+
+		<!-- Bootstrap -->
+		<link href="{% static 'fablab/css/bootstrap.min.css' %}" rel="stylesheet">
+		<!-- Font Awesome Icons -->
+		<link href="{% static 'fablab/fonts/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+		<!-- PE Icon 7 Stoke -->
+		<link href="{% static 'fablab/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css' %}" rel="stylesheet">
+		<link href="{% static 'fablab/fonts/pe-icon-7-stroke/css/helper.css' %}" rel="stylesheet">
+		<!-- PE Icon Social -->
+		<link href="{% static 'fablab/fonts/pe-icon-social/css/pe-icon-social.css' %}" rel="stylesheet">
+		<link href="{% static 'fablab/fonts/pe-icon-social/css/helper.css' %}" rel="stylesheet">
+		<!-- Quicksand Dash -->
+		<link href="{% static 'fablab/fonts/quicksand-dash/stylesheet.css' %}" rel="stylesheet">
+		<!-- Owl Carousel -->
+		<link href="{% static 'fablab/css/owl.carousel.css' %}" rel="stylesheet">
+		<link href="{% static 'fablab/css/owl.theme.default.css' %}" rel="stylesheet">
+		<!-- Sweet Alert -->
+		<link href="{% static 'fablab/css/sweetalert.css' %}" rel="stylesheet">
+		<!-- Animate -->
+		<link href="{% static 'fablab/css/animate.min.css' %}" rel="stylesheet">
+		<!-- Nivo Lightbox -->
+		<link href="{% static 'fablab/scripts/Nivo-Lightbox/nivo-lightbox.css' %}" rel="stylesheet">
+		<link href="{% static 'fablab/scripts/Nivo-Lightbox/themes/default/default.css' %}" rel="stylesheet">
+		<!-- NoUISlider -->
+		<link href="{% static 'fablab/css/jquery.nouislider.min.css' %}" rel="stylesheet">
+		<!-- Style.css -->
+		<link href="{% static 'fablab/css/style.css' %}" rel="stylesheet">
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+	</head>
+	<body>
+		
+		<header class="header clearfix">
+			<div class="left">
+				<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
+			</div> <!-- end .left -->
+			<div class="navigation clearfix">
+				<nav class="main-nav">
+					<ul class="list-unstyled">
+						<li class="menu-item-has-children">
+							<a href="/fablab/users">Users</a>
+							<ul>
+								<li><a href="/fablab/users">User List</a></li>
+								<li><a href="/fablab/new-user">Add a new user</a></li>
+							</ul>
+						</li>
+						<li class="menu-item-has-children">
+							<a href="/fablab/machines">Machines</a>
+							<ul>
+								<li><a href="/fablab/machines">Machine List</a></li>
+								<li><a href="/fablab/new-machine">Add a new Machine</a></li>
+							</ul>
+						</li>
+					</ul>
+				</nav> <!-- end .main-nav -->
+				<a href="" class="responsive-menu-open"><i class="fa fa-bars"></i></a>
+				<a href="" class="cart-button">
+					<i class="icon-shopping-basket"></i>
+					<span>0</span>
+				</a>
+			</div> <!-- end .navigation -->
+			<div class="right">
+				<div class="user">
+					<ul class="list-unstyled">
+						<li>*admaccount</li>
+					</ul>
+				</div>
+			</div> <!-- end .left -->
+			<div class="right">
+				<a href="/fablab/logout" class="button">Log Out</a>
+			</div> <!-- end .left -->
+		</header> <!-- end .header -->
+		<div class="responsive-menu">
+			<a href="" class="responsive-menu-close"><i class="fa fa-times"></i></a>
+			<nav class="responsive-nav"></nav> <!-- end .responsive-nav -->
+		</div> <!-- end .responsive-menu -->
+
+		<div class="page-title" style="background-image: url({% static 'fablab/images/background15.jpg');">
+			<div class="inner">
+				<h2>{{ user }}</h2>
+			</div> <!-- end .inner -->
+		</div> <!-- end .page-title -->
+
+		<div class="section boxed-section light shop-details">
+			<div class="inner">
+				<div class="container">
+					<div class="box">
+						<div class="row">
+							<div class="col-md-6">
+								
+								<div class="product-info">
+									<ul class="list-unstyled">
+										<li><span>Organization : </span>N/A</li>
+										<li><span>Tel : </span>N/A</li>
+										<li><span>Mail : </span>N/A</li>
+									</ul>
+								</div> <!-- end .product-info -->
+								<ul class="nav nav-tabs product-info-tabs">
+								    <li class="active"><a data-toggle="tab" href="">Description</a></li>
+								</ul> <!-- end .product-info-tabs -->
+								<div class="tab-content">
+								    <div id="description-tab" class="tab-pane fade in active">
+								        <p> Description coming soon </p>
+								    </div> <!-- end #description-tab -->
+								</div> <!-- end .tab-content -->
+								<div class="product-quantity">
+									<div class="shop-sidebar">
+										<div class="sidebar-widget">
+											<select>
+												
+												<option selected> Choose machine </option>
+												{% for machine in machine_list %}
+													<option>{{ machine }}</option>
+												{% endfor %}
+												
+											</select>
+										</div> <!-- end .sidebar-widget -->
+										<button type="button" class="button">Add Permission</button>
+										<p></p>
+										<a href="/fablab/delete_user/{{ user }}" class="button">Delete user</a>
+									</div> <!-- end .shop-sidebar -->	
+								</div> <!-- end .product-quantity -->
+							</div> <!-- end col-md-6 -->
+							<div class="col-md-6">
+								<div class="related-products">
+									<h3 class="text-center">Authorization</h3>
+									{% for u_machine in user.machine_set.all %}
+										<div class="product-description">
+											<a href="/fablab/machines/{{ u_machine }}/">{{ u_machine }}</a>
+											<a href="/fablab/remove_machine_from_user/{{ user }}/{{ u_machine }}">Remove user's authorization for this machine</a>
+										</div>
+									{% endfor %}
+										
+								</div> <!-- end .related-products -->
+							</div> <!-- end col-md-6 -->
+						</div> <!-- end .row -->
+					</div> <!-- end .box -->
+				</div> <!-- end .container -->
+			</div> <!-- end .inner -->
+		</div> <!-- end .section -->
+
+		<footer class="footer">
+			<div class="top">
+				<div class="left">
+					<div class="logo"><a href="index.html"><img src="{% static 'fablab/images/logo-dark.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
+				</div> <!-- end .left -->
+				<div class="right">Proudly Made in France<a href="">+84 968796789</a></div> <!-- end .left -->
+			</div> <!-- end .top -->
+			<div class="bottom">Copyright &copy; 2017.Company name All rights reserved.</div>
+		</footer> <!-- end .footer -->
+
+		<!-- jQuery -->
+		<script src="{% static 'fablab/js/jquery-3.1.0.min.js' %}"></script>
+		<!-- Bootstrap -->
+		<script src="{% static 'fablab/js/bootstrap.min.js' %}"></script>
+		<!---<script src="http://ditu.google.cn/maps/api/js?key=AIzaSyAy-PboZ3O_A25CcJ9eoiSrKokTnWyAmt8"></script>--->
+		<!-- rich marker -->
+		<script src="{% static 'fablab/js/richmarker.js' %}"></script>
+		<!-- Owl Carousel -->
+		<script src="{% static 'fablab/js/owl.carousel.min.js' %}"></script>
+		<!-- Countdown -->
+		<script src="{% static 'fablab/js/countdown.js' %}"></script>
+		<!-- Sweet Alert -->
+		<script src="{% static 'fablab/js/sweetalert.min.js' %}"></script>
+		<!-- Nivo Lightbox -->
+		<script src="{% static 'fablab/scripts/Nivo-Lightbox/nivo-lightbox.min.js' %}"></script>
+		<!-- NoUISlider -->
+		<script src="{% static 'fablab/js/jquery.nouislider.all.min.js' %}"></script>
+		<!-- Scripts.js -->
+		<script src="{% static 'fablab/js/scripts.js' %}"></script>
+
+	</body>
+</html>

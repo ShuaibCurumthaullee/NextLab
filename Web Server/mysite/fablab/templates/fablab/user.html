@@ -1,0 +1,13 @@
+<p> Retourner à <a href="/fablab">home</a> </p>
+
+<p> <a href="/fablab/users">Liste des utilisateurs</a> </p>
+
+{% if user %}
+    <ul>
+    
+    You're looking at user {{ user }}
+    
+    </ul>
+{% else %}
+    <p>User does not exist.</p>
+{% endif %}

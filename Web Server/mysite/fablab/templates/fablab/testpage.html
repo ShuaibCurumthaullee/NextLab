@@ -1,0 +1,19 @@
+{% for machine in machine_list %}
+    <li> {{ machine.machine_name }} </li>
+    {% for m_user in machine.machine_user.all %}
+		<li> {{ m_user }} </li>
+	{% endfor %}
+    <p></p>
+{% endfor %}
+<p></p>
+{% for user in user_list %}
+    <li> {{ user }} </li>
+    {% for u_machine in user.machine_set.all %}
+		<li> {{ u_machine }} </li>
+	{% endfor %}
+	<p></p>
+{% endfor %}
+<p></p>
+{% for card in cardID_list %}
+    <li> {{ card }} </li>
+{% endfor %}

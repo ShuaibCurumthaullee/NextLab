@@ -1,0 +1,13 @@
+<p> Retourner à <a href="/fablab">home</a> </p>
+
+<p> Liste des utilisateurs : </p>
+
+{% if user_list %}
+    <ul>
+    {% for user in user_list %}
+        <li><a href="/fablab/users/{{ user }}/">{{ user }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No users are available.</p>
+{% endif %}

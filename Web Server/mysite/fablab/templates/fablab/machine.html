@@ -1,0 +1,13 @@
+<p> Retourner à <a href="/fablab">home</a> </p>
+
+<p> <a href="/fablab/machines">Liste des machines</a> </p>
+
+{% if machine %}
+    <ul>
+    
+    You're looking at machine {{ machine.machine_name }}
+    
+    </ul>
+{% else %}
+    <p>Machine does not exist.</p>
+{% endif %}
