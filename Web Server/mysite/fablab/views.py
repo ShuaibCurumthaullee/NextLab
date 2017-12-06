@@ -25,6 +25,7 @@ def index2(request):
     return render(request, 'fablab/index2.html', context)
 
 def login_view(request):
+    print("i'm here")
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
 

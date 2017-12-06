@@ -54,16 +54,19 @@
 		<div class="section large transparent dark text-center" style="background-image: url({% static 'fablab/images/background01.jpg' %});">
 			<div class="inner">
 				<div class="container">
-					<form>
+					
 						<div class="row">
 							<div class="col-sm-7">
-								<div class="logo"><a href="index.html"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
+								<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 								<h1>Secure your machine</h1>
 								<p class="lead">Find, reserve, and secure your machine.</p>
 							</div> <!-- end .col-sm-4 -->
 							<div class="col-sm-5">
 								<div class="signup-header wow fadeInUp">
 									<!--form-->
+									
+									
+									
 									<form id="login_form" method="post" action="/fablab/login/">
 										{% csrf_token %}
 										<div class="form-group">
@@ -86,10 +89,13 @@
 										<input type="submit" class="button" name value="Login"</div>
 										<!--input class="b" type="submit" name value="Login" /-->
 									</form>
+									
+									
+									
 								</div>
 							</div> <!-- end .col-sm-4 -->
 						</div> <!-- end .row -->
-					</form>
+					
 					<div class="highlight-slider-wrapper">
 						<div class="row">
 							<div class="col-md-8 col-md-offset-2">
