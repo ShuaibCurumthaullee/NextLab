@@ -46,27 +46,20 @@
 
 	</head>
 	<body>
-		<div class="responsive-menu">
-			<a href="" class="responsive-menu-close"><i class="fa fa-times"></i></a>
-			<nav class="responsive-nav"></nav> <!-- end .responsive-nav -->
-		</div> <!-- end .responsive-menu -->
 
 		<div class="section large transparent dark text-center" style="background-image: url({% static 'fablab/images/background01.jpg' %});">
 			<div class="inner">
 				<div class="container">
-					
 						<div class="row">
-							<div class="col-sm-7">
+							<div class="col-sm-6">
 								<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 								<h1>Secure your machine</h1>
 								<p class="lead">Find, reserve, and secure your machine.</p>
-							</div> <!-- end .col-sm-4 -->
+							</div> <!-- end .col-sm-6 -->
+
 							<div class="col-sm-5">
-								<div class="signup-header wow fadeInUp">
+								<div class="signup-box">
 									<!--form-->
-									
-									
-									
 									<form id="login_form" method="post" action="/fablab/login/">
 										{% csrf_token %}
 										<div class="form-group">
@@ -75,68 +68,14 @@
 										<div class="form-group">
 											<input type="password" placeholder="Password *" name="password">
 										</div> <!-- end .form-group -->
-										<div class="clearfix">
-											<div class="checkbox">
-												<label>
-													<input type="checkbox"> Remember me
-												</label>
-											</div>
-											<div class="text-center">
-												<a href="" class="signup-open">Lost your password?</a></p>
-											</div>
-										</div> <!-- end .clearfix -->
 										<!--div class="button-wrapper"><a href="/fablab/login" type="submit" class="button">Login</a></div-->
-										<input type="submit" class="button" name value="Login"</div>
+										<input type="submit" class="button" name value="Log in"</div>
 										<!--input class="b" type="submit" name value="Login" /-->
-									</form>
-									
-									
-									
-								</div>
+									</form>	
+								</div><!-- end .signup-box -->
 							</div> <!-- end .col-sm-4 -->
 						</div> <!-- end .row -->
 					
-					<div class="highlight-slider-wrapper">
-						<div class="row">
-							<div class="col-md-8 col-md-offset-2">
-								<div class="highlight-slider">
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-food.png' %}" alt="food">
-											<div class="overlay">Food</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-lodging.png' %}" alt="lodging">
-											<div class="overlay">Lodging</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-culture.png' %}" alt="culture">
-											<div class="overlay">Culture</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-shopping.png' %}" alt="shopping">
-											<div class="overlay">Shopping</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-nightlife.png' %}" alt="nightlife">
-											<div class="overlay">Nightlife</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-									<div class="item">
-										<a href="" class="icon">
-											<img src="{% static 'fablab/images/highlight-drink.png' %}" alt="drink">
-											<div class="overlay">Drink</div>
-										</a> <!-- end .icon -->
-									</div> <!-- end .item -->
-								</div> <!-- end .highlight-slider -->
 							</div> <!-- end .col-md-8 -->
 						</div> <!-- end .row -->
 					</div> <!-- end .highlight-slider-wrapper -->
@@ -149,7 +88,7 @@
 				<div class="left">
 					<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo-dark.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 				</div> <!-- end .left -->
-				<div class="right">Proudly Made in France<a href="">+84 968796789</a></div> <!-- end .left -->
+				<div class="right">Projet P5I</div> <!-- end .left -->
 			</div> <!-- end .top -->
 			<div class="bottom">Copyright &copy; 2017.Company name All rights reserved.</div>
 		</footer> <!-- end .footer -->

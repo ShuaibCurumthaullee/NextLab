@@ -103,47 +103,14 @@
 				<div class="container">
 					<div class="box transparent">
 						<div class="row">
-							<div class="col-md-4">
-								<div class="shop-sidebar">
-									<div class="sidebar-widget">
-										<select>
-											<option>Default sorting</option>
-											<option>Group</option>
-											<option>Individual</option>
-										</select>
-									</div> <!-- end .sidebar-widget -->
-									<div class="sidebar-widget">
-										<h5>Search Name</h5>
-										<form class="searchform">
-											<input type="text" placeholder="Type here ...">
-											<button><i class="pe-7s-search"></i></button>
-										</form>
-									</div> <!-- end .sidebar-widget -->
-									<div class="sidebar-widget">
-										<h5>Authorization</h5>
-										<div class="categories">
-											<a href="" class="active">All<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-											<a href="">Fablab<i class="pe-7s-right-arrow"></i></a>
-										</div>
-									</div> <!-- end .sidebar-widget -->
-								</div> <!-- end .shop-sidebar -->
-							</div> <!-- end .col-md-4 -->
-							<div class="col-md-8">
+							
 								<div class="row products">
 									
 									{% if user_list %}
 										<ul>
 										{% for user in user_list %}
 										
-											<div class="col-sm-6">
+											<div class="col-sm-4">
 												<div class="product">
 													<img src="{% static 'fablab/images/product07.jpg' %}" alt="image" class="img-responsive">
 													<div class="overlay"></div>
@@ -152,7 +119,7 @@
 													</div> <!-- end .content -->
 													<a href="/fablab/users/{{ user }}/" class="button">Details</a>
 												</div> <!-- end .product -->
-											</div> <!-- end .col-sm-6 -->
+											</div> <!-- end .col-sm-4 -->
 									
 										{% endfor %}
 										</ul>
@@ -162,7 +129,6 @@
 									
 									
 								</div> <!-- end .row -->
-							</div> <!-- end .col-md-8 -->
 						</div> <!-- end .row -->
 						<div class="text-center">
 							<a href="" id="products-load-more" class="button">Load More</a>
@@ -177,7 +143,7 @@
 				<div class="left">
 					<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo-dark.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 				</div> <!-- end .left -->
-				<div class="right">Proudly Made in France<a href="">+84 968796789</a></div> <!-- end .left -->
+				<div class="right">Projet P5I</div> <!-- end .left -->
 			</div> <!-- end .top -->
 			<div class="bottom">Copyright &copy; 2017.Company name All rights reserved.</div>
 		</footer> <!-- end .footer -->

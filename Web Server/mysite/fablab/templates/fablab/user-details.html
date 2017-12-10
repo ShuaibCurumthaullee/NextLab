@@ -102,8 +102,7 @@
 				<div class="container">
 					<div class="box">
 						<div class="row">
-							<div class="col-md-6">
-								
+							
 								<div class="product-info">
 									<ul class="list-unstyled">
 										<li><span>Organization : </span>N/A</li>
@@ -133,22 +132,25 @@
 										</div> <!-- end .sidebar-widget -->
 										<button type="button" class="button">Add Permission</button>
 										<p></p>
-										<a href="/fablab/delete_user/{{ user }}" class="button">Delete user</a>
+										<a href="/fablab/delete_user/{{ user }}" class="button red">Delete user</a>
 									</div> <!-- end .shop-sidebar -->	
 								</div> <!-- end .product-quantity -->
-							</div> <!-- end col-md-6 -->
-							<div class="col-md-6">
+
 								<div class="related-products">
 									<h3 class="text-center">Authorization</h3>
 									{% for u_machine in user.machine_set.all %}
 										<div class="product-description">
-											<a href="/fablab/machines/{{ u_machine }}/">{{ u_machine }}</a>
-											<a href="/fablab/remove_machine_from_user/{{ user }}/{{ u_machine }}">Remove user's authorization for this machine</a>
+											<div class="col-md-7">
+												<a href="/fablab/machines/{{ u_machine }}/">{{ u_machine }}</a>
+											</div> <!-- end col-md-7 -->
+											<div class="col-md-5">
+												<a href="/fablab/remove_machine_from_user/{{ user }}/{{ u_machine }}">Remove user's authorization for this machine</a>
+											</div> <!-- end col-md-5 -->
 										</div>
 									{% endfor %}
 										
 								</div> <!-- end .related-products -->
-							</div> <!-- end col-md-6 -->
+
 						</div> <!-- end .row -->
 					</div> <!-- end .box -->
 				</div> <!-- end .container -->
@@ -158,9 +160,9 @@
 		<footer class="footer">
 			<div class="top">
 				<div class="left">
-					<div class="logo"><a href="index.html"><img src="{% static 'fablab/images/logo-dark.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
+					<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo-dark.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 				</div> <!-- end .left -->
-				<div class="right">Proudly Made in France<a href="">+84 968796789</a></div> <!-- end .left -->
+				<div class="right">Projet P5I</div> <!-- end .left -->
 			</div> <!-- end .top -->
 			<div class="bottom">Copyright &copy; 2017.Company name All rights reserved.</div>
 		</footer> <!-- end .footer -->
