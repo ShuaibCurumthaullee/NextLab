@@ -152,6 +152,16 @@ h5 {
 	letter-spacing: .8px;
 }
 
+.logo {
+	height: 20px;
+	font-size: 0;
+	text-align: left;
+	margin-right: 200px;
+	margin-bottom: 20px;
+	display: inline-block;
+	vertical-align: top;
+}
+
 .section.dark h2 {
 	color: #fff;
 }
@@ -240,6 +250,12 @@ h5 {
 	}
 }
 
+.signup-box {
+	background-color:rgba(255,255,255,0.2);
+	border:30px solid rgba(255,255,255,0);
+    border-radius:15px;
+}
+
 /* ==========================================================================
    02. Buttons
    ========================================================================== */
@@ -284,6 +300,14 @@ h5 {
 }
 .button.white:hover {
 	background: #00b0ff;
+	color: #fff;
+}
+.button.red {
+	background: #CD0000;
+	color: #fff;
+}
+.button.red:hover {
+	background: #CD0000;
 	color: #fff;
 }
 .button.border {
@@ -586,9 +610,10 @@ select, .light-inputs select {
 .header {
 	z-index: 9;
 	background: #172434;
-	position: relative;
+	position: fixed;
+	width: 100%;
 }
-.header.fixed {
+.header .fixed {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -3427,7 +3452,7 @@ blockquote {
 }
 .product {
 	position: relative;
-	margin-bottom: 30px;
+	margin: 30px 2f0px;
 	-webkit-transition: .25s;
 	-ms-transition: .25s;
 	-moz-transition: .25s;
@@ -3462,7 +3487,7 @@ blockquote {
 .product .content {
 	position: absolute;
 	bottom: 0;
-	left: 0;
+	left: 0px;
 	color: #fff;
 	font-size: 14px;
 	line-height: 28px;
