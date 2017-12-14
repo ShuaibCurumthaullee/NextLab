@@ -31,21 +31,25 @@ urlpatterns = [
     # /machines
     url(r'^machines/$', views.machines, name='machines'),
     # /machines/<machine_name>
-    url(r'^machines/(?P<machine_name>\w+)/$', views.detail_machine),
+    url(r'^machines/(?P<machine_name>\D+)/$', views.detail_machine),
+    # /machines/<card_id>
+    url(r'^cards/(?P<card_id>\w+)/$', views.detail_card),
+    
     # /access/<cardID>
     url(r'^access/(?P<cardID>\w+)/$', views.access_machine),
     # /new-machine
     url(r'^new-machine/$', views.new_machine),
     # /delete_machine/<machine_name>
-    url(r'^delete_machine/(?P<machine_name>\w+)/$', views.delete_machine),
+    url(r'^delete_machine/(?P<machine_name>\D+)/$', views.delete_machine),
     # /delete_user/<user_name>
     url(r'^delete_user/(?P<user>[\w|\W]+)/$', views.delete_user),
-    # /add_user_to_machine/{{ machine.machine_name }}/ {{ user }}
-    # url(r'^add_user_to_machine/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_user_to_machine),
+    # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
+    url(r'^add_machine_to_user/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_machine_to_user),
+    #url(r'^add_user_to_machine/$', views.add_user_to_machine),
     # /remove_user_from_machine
     url(r'^remove_user_from_machine/(?P<user>[\w|\W]+)/(?P<machine_name>\w+)/$', views.remove_user_from_machine),
-    # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
-    # url(r'^add_machine_to_user/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_machine_to_user),
+    # /add_user_to_machine/{{ machine.machine_name }}/ {{ user }}
+    url(r'^add_user_to_machine/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_user_to_machine),
     # /remove_machine_from_user
     url(r'^remove_machine_from_user/(?P<user>[\w|\W]+)/(?P<machine_name>\w+)/$', views.remove_machine_from_user),
     # /login/

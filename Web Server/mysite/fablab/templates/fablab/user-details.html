@@ -48,7 +48,7 @@
 		
 		<header class="header clearfix">
 			<div class="left">
-				<div class="logo"><a href="/fablab/index2"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
+				<div class="logo"><a href="/fablab/machines"><img src="{% static 'fablab/images/logo.png' %}" alt="ExploreCity" class="img-responsive"></a></div> <!-- end .logo -->
 			</div> <!-- end .left -->
 			<div class="navigation clearfix">
 				<nav class="main-nav">
@@ -121,16 +121,34 @@
 								<div class="product-quantity">
 									<div class="shop-sidebar">
 										<div class="sidebar-widget">
-											<select>
+											
+											
+											<form method="POST" name="myform" action="/fablab/add_machine_to_user?action=contact_agent&agent_id="  onsubmit="SetData()">
+												{% csrf_token %}
 												
-												<option selected> Choose machine </option>
-												{% for machine in machine_list %}
-													<option>{{ machine }}</option>
-												{% endfor %}
+												<select name="agent" id="agent">
+													<option selected> Choose machine </option>
+													{% for machine in machine_list %}
+														<option>{{ machine }}</option>
+													{% endfor %}
 												
-											</select>
+												</select>
+												<br>
+												<button type="submit" class="button">Add Permission</button>
+											</form>
+											
+											<script>
+												function SetData(){
+												   var select = document.getElementById('agent');
+												   var agent_id = select.options[select.selectedIndex].value;
+												   var user = "{{user}}";
+												   document.myform.action = "/fablab/add_machine_to_user/"+agent_id+"/"+user+"/" ; 
+												   myform.submit();
+												}
+											</script>
+											
 										</div> <!-- end .sidebar-widget -->
-										<button type="button" class="button">Add Permission</button>
+										<br>
 										<p></p>
 										<a href="/fablab/delete_user/{{ user }}" class="button red">Delete user</a>
 									</div> <!-- end .shop-sidebar -->	

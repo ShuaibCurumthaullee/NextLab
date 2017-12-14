@@ -25,7 +25,6 @@ def index2(request):
     return render(request, 'fablab/index2.html', context)
 
 def login_view(request):
-    print("i'm here")
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
 
@@ -181,6 +180,24 @@ def detail_machine(request, machine_name):
 	context = { 'machine': machine , 'machine_users' : machine_users , 'user_list': user_list}
 	return render(request, 'fablab/machine-details.html', context)
 
+@login_required(login_url='/fablab/index2')
+def detail_card(request, card_id):
+	context = {}
+	machine_users = {}
+	machines = {}
+	try:
+		card = CardID.objects.get(cardID__exact = card_id)
+		machine_users = card.machine_user.all()
+		machines = card.machine.all()
+	except CardID.DoesNotExist:
+		raise Http404("This card does not exist")
+	
+	user_list = Machine_User.objects.order_by('id')
+	machine_list = Machine.objects.order_by('id')
+	
+	context = { 'cardID': card , 'machine_users' : machine_users , 'machines': machines, 'user_list':user_list, 'machine_list':machine_list }
+	return render(request, 'fablab/card-details.html', context)
+
 def access_machine(request, cardID):
 	context = {}
 	try:
@@ -188,9 +205,9 @@ def access_machine(request, cardID):
 		access='Yes'
 		context = { 'access': access}
 	except CardID.DoesNotExist:
-                access='No'
+		access='No'
 		context = { 'access': access}
-	return render(request, 'fablab/testpage.html', context)
+	return render(request, 'fablab/access.html', context)
 
 @login_required(login_url='/fablab/index2')
 def detail_user(request, user_name):
@@ -240,12 +257,15 @@ def remove_user_from_machine(request, user, machine_name):
 	return HttpResponseRedirect('/fablab/machines/'+machine_name)
 
 @login_required(login_url='/fablab/index2')
-def add_user_to_machine(request, user, machine_name):
+def add_machine_to_user(request, user, machine_name):
 	u = user.split()
-	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	user_name = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
 	m = Machine.objects.get(machine_name__exact = machine_name)
-	m.machine_user.add(u[0])
-	the_url = '/fablab/machines/'+machine_name
+	machine_set = user_name[0].machine_set.all()
+	machine_list = list(machine_set)
+	if m not in machine_set:
+		m.machine_user.add(user_name[0])
+	the_url = '/fablab/users/'+user
 	return HttpResponseRedirect(the_url)
 
 @login_required(login_url='/fablab/index2')
@@ -258,11 +278,35 @@ def remove_machine_from_user(request, user, machine_name):
 	return HttpResponseRedirect(the_url)
 
 @login_required(login_url='/fablab/index2')
-def add_machine_to_user(request, user, machine_name):
+def add_user_to_machine(request, user, machine_name):
 	u = user.split()
-	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	user_name = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
 	m = Machine.objects.get(machine_name__exact = machine_name)
-	m.machine_user.add(u[0])
-	the_url = '/fablab/users/'+user
+	machine_set = user_name[0].machine_set.all()
+	if m not in machine_set:
+		m.machine_user.add(user_name[0])
+	the_url = '/fablab/machines/'+machine_name
+	return HttpResponseRedirect(the_url)
+
+@login_required(login_url='/fablab/index2')
+def add_user_to_card(request, user, card_id):
+	u = user.split()
+	user_name = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	card = CardID.objects.get(cardID__exact = card_id)
+	card_set = user_name[0].cardid_set.all()
+	if card not in card_set:
+		card.machine_user.add(user_name[0])
+	the_url = '/fablab/cards/'+card_id
+	return HttpResponseRedirect(the_url)
+
+@login_required(login_url='/fablab/index2')
+def add_machine_to_card(request, machine_name, card_id):
+	u = user.split()
+	m = Machine.objects.get(machine_name__exact = machine_name)
+	card = CardID.objects.get(cardID__exact = card_id)
+	card_set = m.cardid_set.all()
+	if card not in card_set:
+		card.machine.add(user_name[0])
+	the_url = '/fablab/cards/'+card_id
 	return HttpResponseRedirect(the_url)
 

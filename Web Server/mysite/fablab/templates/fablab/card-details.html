@@ -93,7 +93,7 @@
 			
 		<div class="page-title" style="background-image: url({% static 'fablab/images/background15.jpg' %});">
 			<div class="inner">
-				<h2>{{ machine.machine_name }}</h2>
+				<h2>{{ cardID }}</h2>
 			</div> <!-- end .inner -->
 		</div> <!-- end .page-title -->
 
@@ -102,23 +102,8 @@
 				<div class="container">
 					<div class="box">
 						<div class="row">
-							<div class="col-md-6">
-								<div class="blog-post gallery product-gallery">
-									<div class="blog-gallery">
-										<div><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-										<div><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-										<div><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-									</div> <!-- end .blog-gallery -->	
-								</div> <!-- end .blog-post -->
-								<div class="row">
-									<div class="product-thumbnails">
-										<div class="col-xs-4"><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-										<div class="col-xs-4"><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-										<div class="col-xs-4"><img src="{% static 'fablab/images/cart1.jpg' %}" alt="image" class="img-responsive"></div>
-									</div> <!-- end .product-thumbnails -->
-								</div> <!-- end .row -->
-							</div> <!-- end col-md-6 -->
-							<div class="col-md-6">
+							
+							
 								
 								<div class="product-info">
 									<ul class="list-unstyled">
@@ -144,7 +129,7 @@
 									
 									<div class="sidebar-widget">
 										
-										<form method="POST" name="myform" onsubmit="SetData()">
+										<form method="POST" name="myform" action="/fablab/add_user_to_machine?action=contact_agent&agent_id="  onsubmit="SetData()">
 											{% csrf_token %}
 											
 											<select name="agent" id="agent">
@@ -156,7 +141,7 @@
 											</select>
 											
 											<br>
-											<button type="submit" class="button">Add to User List</button>
+											<button type="submit" class="button">Add user</button>
 										</form>
 										
 										<script>
@@ -169,6 +154,33 @@
 											}
 										</script>
 										
+										<br><br>
+										
+										<form method="POST" name="myform" action="/fablab/add_machine_to_user?action=contact_agent&agent_id="  onsubmit="SetData()">
+											{% csrf_token %}
+											
+											<select name="agent" id="agent">
+												<option selected> Choose machine </option>
+												{% for machine in machine_list %}
+													<option>{{ machine }}</option>
+												{% endfor %}
+											
+											</select>
+											
+											<br>
+											<button type="submit" class="button">Add machine</button>
+										</form>
+										
+										<script>
+											function SetData(){
+											   var select = document.getElementById('agent');
+											   var agent_id = select.options[select.selectedIndex].value;
+											   var machine = "{{machine}}";
+											   document.myform.action = "/fablab/add_machine_to_user/"+machine+"/"+agent_id+"/" ; 
+											   myform.submit();
+											}
+										</script>
+										
 										
 									</div> <!-- end .sidebar-widget -->
 									
@@ -177,7 +189,7 @@
 										<!-- a href="/fablab/add_user_to_machine/{{ machine.machine_name }}/" class="button">Add to User List</a-->
 									</div> <!-- end .product-info -->
 									<div class="product-info">
-										<a href="/fablab/delete_machine/{{ machine.machine_name }}" class="button red">Delete machine</a>
+										<a href="/fablab/delete_machine/{{ machine.machine_name }}" class="button red">Delete card</a>
 									</div> <!-- end .product-info -->
 								</div>
 								
@@ -186,20 +198,39 @@
 						<div class="related-products">
 							<h3 class="text-center">Users</h3>
 							
-							{% for m_user in machine.machine_user.all %}
+							{% for c_user in cardID.machine_user.all %}
 								<div class="product-description">
 									<p>
 										<div class="col-md-8">
-											<a href="/fablab/users/{{ m_user }}/">{{ m_user }}</a>
+											<a href="/fablab/users/{{ m_user }}/">{{ c_user }}</a>
 										</div> <!-- end col-md-8 -->
 										<div class="col-md-4">
-											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove user from this machine</a>
+											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove user</a>
 										</div> <!-- end col-md-4 -->
 									</p>
 								</div>
 							{% endfor %}
 							
 						</div> <!-- end .related-products -->
+						
+						<div class="related-products">
+							<h3 class="text-center">Machines</h3>
+							
+							{% for c_machine in cardID.machine_set.all %}
+								<div class="product-description">
+									<p>
+										<div class="col-md-8">
+											<a href="/fablab/users/{{ m_user }}/">{{ c_machine }}</a>
+										</div> <!-- end col-md-8 -->
+										<div class="col-md-4">
+											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove machine</a>
+										</div> <!-- end col-md-4 -->
+									</p>
+								</div>
+							{% endfor %}
+							
+						</div> <!-- end .related-products -->
+						
 					</div> <!-- end .box -->
 				</div> <!-- end .container -->
 			</div> <!-- end .inner -->
