@@ -14,6 +14,7 @@ class Machine_User(models.Model):
 class Machine(models.Model):
     machine_name = models.CharField(max_length=100)
     machine_user = models.ManyToManyField(Machine_User)
+    machine_id = models.IntegerField(null=False, default=5)
 
     def __str__(self):
         return self.machine_name
