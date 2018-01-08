@@ -183,19 +183,22 @@ def detail_machine(request, machine_name):
 @login_required(login_url='/fablab/index2')
 def detail_card(request, card_id):
 	context = {}
-	machine_users = {}
-	machines = {}
+	'''machine_users = {}
+	machines = {}'''
+	machine_user = []
 	try:
 		card = CardID.objects.get(cardID__exact = card_id)
-		machine_users = card.machine_user.all()
-		machines = card.machine.all()
+		'''machine_users = card.machine_user.all()
+		machines = card.machine.all()'''
+		#machine_user = card.machine_user
+		machine_user.append(card.machine_user)
 	except CardID.DoesNotExist:
 		raise Http404("This card does not exist")
 	
 	user_list = Machine_User.objects.order_by('id')
-	machine_list = Machine.objects.order_by('id')
 	
-	context = { 'cardID': card , 'machine_users' : machine_users , 'machines': machines, 'user_list':user_list, 'machine_list':machine_list }
+	#context = { 'cardID': card , 'machine_users' : machine_users , 'machines': machines, 'user_list':user_list, 'machine_list':machine_list }
+	context = { 'cardID': card , 'machine_user' : machine_user , 'user_list':user_list }
 	return render(request, 'fablab/card-details.html', context)
 
 def access_machine(request, cardID):

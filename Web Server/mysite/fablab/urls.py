@@ -44,14 +44,14 @@ urlpatterns = [
     # /delete_user/<user_name>
     url(r'^delete_user/(?P<user>[\w|\W]+)/$', views.delete_user),
     # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
-    url(r'^add_machine_to_user/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_machine_to_user),
+    url(r'^add_machine_to_user/(?P<machine_name>[\w|\W]+)/(?P<user>[\w|\W]+)/$', views.add_machine_to_user),
     #url(r'^add_user_to_machine/$', views.add_user_to_machine),
     # /remove_user_from_machine
-    url(r'^remove_user_from_machine/(?P<user>[\w|\W]+)/(?P<machine_name>\w+)/$', views.remove_user_from_machine),
+    url(r'^remove_user_from_machine/(?P<user>[\w|\W]+)/(?P<machine_name>[\w|\W]+)/$', views.remove_user_from_machine),
     # /add_user_to_machine/{{ machine.machine_name }}/ {{ user }}
-    url(r'^add_user_to_machine/(?P<machine_name>\w+)/(?P<user>[\w|\W]+)/$', views.add_user_to_machine),
+    url(r'^add_user_to_machine/(?P<machine_name>[\w|\W]+)/(?P<user>[\w|\W]+)/$', views.add_user_to_machine),
     # /remove_machine_from_user
-    url(r'^remove_machine_from_user/(?P<user>[\w|\W]+)/(?P<machine_name>\w+)/$', views.remove_machine_from_user),
+    url(r'^remove_machine_from_user/(?P<user>[\w|\W]+)/(?P<machine_name>[\w|\W]+)/$', views.remove_machine_from_user),
     # /login/
     url(r'^login/$', views.login_view, name='login'),
     # /logout/

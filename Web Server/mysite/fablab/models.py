@@ -23,8 +23,7 @@ class Machine(models.Model):
 
 class CardID(models.Model):
     cardID = models.CharField(max_length=200)
-    machine_user = models.ManyToManyField(Machine_User)
-    machine = models.ManyToManyField(Machine)
+    machine_user = models.OneToOneField(Machine_User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.cardID

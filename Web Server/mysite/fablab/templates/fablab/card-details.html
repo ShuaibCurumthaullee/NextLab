@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Machine details</title>
+		<title>Card details</title>
 		
 		{% load static %}
 
@@ -154,33 +154,6 @@
 											}
 										</script>
 										
-										<br><br>
-										
-										<form method="POST" name="myform" action="/fablab/add_machine_to_user?action=contact_agent&agent_id="  onsubmit="SetData()">
-											{% csrf_token %}
-											
-											<select name="agent" id="agent">
-												<option selected> Choose machine </option>
-												{% for machine in machine_list %}
-													<option>{{ machine }}</option>
-												{% endfor %}
-											
-											</select>
-											
-											<br>
-											<button type="submit" class="button">Add machine</button>
-										</form>
-										
-										<script>
-											function SetData(){
-											   var select = document.getElementById('agent');
-											   var agent_id = select.options[select.selectedIndex].value;
-											   var machine = "{{machine}}";
-											   document.myform.action = "/fablab/add_machine_to_user/"+machine+"/"+agent_id+"/" ; 
-											   myform.submit();
-											}
-										</script>
-										
 										
 									</div> <!-- end .sidebar-widget -->
 									
@@ -198,11 +171,11 @@
 						<div class="related-products">
 							<h3 class="text-center">Users</h3>
 							
-							{% for c_user in cardID.machine_user.all %}
+							{% for c_user in machine_user %}
 								<div class="product-description">
 									<p>
 										<div class="col-md-8">
-											<a href="/fablab/users/{{ m_user }}/">{{ c_user }}</a>
+											<a href="/fablab/users/{{ c_user }}/">{{ c_user }}</a>
 										</div> <!-- end col-md-8 -->
 										<div class="col-md-4">
 											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove user</a>
