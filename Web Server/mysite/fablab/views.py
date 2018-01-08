@@ -15,6 +15,9 @@ from .forms import RegisterFormUser, RegisterFormMachine, RegisterFormCard
 
 from django.views.decorators.csrf import csrf_exempt
 
+from django.views.decorators.csrf import csrf_exempt
+
+import json
 
 def index(request):
     latest_machine_list = Machine.objects.order_by('-machine_name')
