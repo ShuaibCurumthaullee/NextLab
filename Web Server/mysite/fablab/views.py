@@ -183,16 +183,35 @@ def detail_machine(request, machine_name):
 	context = { 'machine': machine , 'machine_users' : machine_users , 'user_list': user_list}
 	return render(request, 'fablab/machine-details.html', context)
 
-def access_machine(request, cardID):
+def access_machine(request):
 	context = {}
 	try:
-		numCard = CardID.objects.get(cardID__exact = cardID)
-		access='Yes'
-		context = { 'access': access}
-	except CardID.DoesNotExist:
-		access='No'
-		context = { 'access': access}
-	return render(request, 'fablab/access.html', context)
+        body = json.loads(request.body)
+        if body["type"] == "access_demand":
+            cardID = body["card_uid"]
+            module_id = body["module_id"]
+    except json.JSONDecodeError:
+        raise Http400("Bad request")
+    except KeyError:
+        raise Http400("Bad request")
+    
+	try:
+        numModule = Machine.objects.get(machine_id__exact = module_id)
+    except Machine.DoesNotExist:
+        return JsonResponse ('{"type":"access_error","reason":"module_unknown"}')
+    
+    try:
+        numCard = CardID.objects.get(cardID__exact = cardID)
+    except CardID.DoesNotExist:
+        return JsonResponse('{“type”:“access_error”,“reason”:“card_unknown”}')
+    
+    if(numCard.machine_user == None)
+        return JsonResponse('{“type”:“access_error”,“reason”:“card_unown”}')
+    
+    if(numCard.machine_user is in numModule.machine_user.all())
+        return JsonResponse('{“type”:”access_answer”,“access”:“granted”}')
+    else 
+        return JsonResponse('{“type”:“access_answer”,“access”:“denied”}')
 
 @login_required(login_url='/fablab/index2')
 def detail_user(request, user_name):

@@ -40,7 +40,7 @@ urlpatterns = [
     url(r'^machines/(?P<machine_name>\D+)/$', views.detail_machine),
     
     # /access/<cardID>
-    url(r'^access/(?P<cardID>\w+)/$', views.access_machine),
+    url(r'^access/$', views.access_machine),
     
     # /new-machine
     url(r'^new-machine/$', views.new_machine),
