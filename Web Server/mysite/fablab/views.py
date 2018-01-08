@@ -55,7 +55,7 @@ def login_view(request):
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied. GTFO")
+            return HttpResponse("Invalid login details")
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
@@ -307,7 +307,6 @@ def add_user_to_card(request, user, card_id):
 	
 	if card.machine_user is None:
 		if user_name:
-			print(user_name)
 			card.machine_user = user_name[0]
 			card.save()
 	the_url = '/fablab/cards/'+card_id
