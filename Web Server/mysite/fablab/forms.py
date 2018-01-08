@@ -15,5 +15,5 @@ class RegisterFormUser(forms.Form):
 class RegisterFormMachine(forms.Form):
     machineName = forms.CharField(label='Machine name', max_length=100)
 
-class RegisterFormMachine(forms.Form):
+class RegisterFormCard(forms.Form):
     cardNumber = forms.CharField(label='Card number', max_length=100)

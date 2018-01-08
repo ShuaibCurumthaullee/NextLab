@@ -4,14 +4,16 @@ from __future__ import unicode_literals
 from django.shortcuts import render, render_to_response
 
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from .models import Machine, Machine_User, CardID
 
-from .forms import RegisterFormUser, RegisterFormMachine
+from .forms import RegisterFormUser, RegisterFormMachine, RegisterFormCard
+
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -67,7 +69,7 @@ def login_view(request):
         # blank dictionary object...
         return HttpResponseRedirect('/fablab/index2/')
 
-#logout
+#regiqter user
 @login_required(login_url='/fablab/index2')
 def register_user(request):
 	# if this is a POST request we need to process the form data
@@ -94,6 +96,7 @@ def register_user(request):
 
 	return render(request, 'fablab/new-user.html', {'form': form})
 
+#register machine
 @login_required(login_url='/fablab/index2')
 def register_machine(request):
 	# if this is a POST request we need to process the form data
@@ -122,7 +125,7 @@ def register_machine(request):
 
 	return render(request, 'fablab/new-machine.html', {'form': form})
 
-#register machine
+#logout
 @login_required(login_url='/fablab/index2')
 def logout_view(request):
 
@@ -133,9 +136,10 @@ def logout_view(request):
     return HttpResponseRedirect('/fablab/index2/')
 
 
-# ////////////////////////////////////////// Users, machines and cards ////////////////////////////
+# ////////////////////////////////////////// List users, machines and cards ////////////////////////////
 
 
+#user-list
 @login_required(login_url='/fablab/index2')
 def users(request):
 	context = {}
@@ -146,6 +150,7 @@ def users(request):
 		raise Http404("No users available")
 	return render(request, 'fablab/user-list.html', context)
 
+#machine-list
 @login_required(login_url='/fablab/index2')
 def machines(request):
 	context = {}
@@ -156,6 +161,7 @@ def machines(request):
 		raise Http404("You have no machines listed.")
 	return render(request, 'fablab/machine-list.html', context)
 
+#card-list
 @login_required(login_url='/fablab/index2')
 def cards(request):
 	context = {}
@@ -167,6 +173,11 @@ def cards(request):
 	return render(request, 'fablab/card-list.html', context)
 
 
+
+# ////////////////////////////////////////// Detail users, machines, cards & access ////////////////////////////
+
+
+#detail machine
 @login_required(login_url='/fablab/index2')
 def detail_machine(request, machine_name):
 	context = {}
@@ -183,36 +194,40 @@ def detail_machine(request, machine_name):
 	context = { 'machine': machine , 'machine_users' : machine_users , 'user_list': user_list}
 	return render(request, 'fablab/machine-details.html', context)
 
+#access machine
+@csrf_exempt
 def access_machine(request):
-	context = {}
-	try:
+    context = {}
+    print(request.body)
+    try:
         body = json.loads(request.body)
         if body["type"] == "access_demand":
             cardID = body["card_uid"]
             module_id = body["module_id"]
-    except json.JSONDecodeError:
-        raise Http400("Bad request")
+    except ValueError:
+        return HttpResponseBadRequest()
     except KeyError:
-        raise Http400("Bad request")
+        return HttpResponseBadRequest()
     
-	try:
+    try:
         numModule = Machine.objects.get(machine_id__exact = module_id)
     except Machine.DoesNotExist:
-        return JsonResponse ('{"type":"access_error","reason":"module_unknown"}')
+        return JsonResponse ({"type":"access_error","reason":"module_unknown"})
     
     try:
         numCard = CardID.objects.get(cardID__exact = cardID)
     except CardID.DoesNotExist:
-        return JsonResponse('{“type”:“access_error”,“reason”:“card_unknown”}')
+        return JsonResponse({"type":"access_error","reason":"card_unknown"})
     
-    if(numCard.machine_user == None)
-        return JsonResponse('{“type”:“access_error”,“reason”:“card_unown”}')
+    if(numCard.machine_user is None):
+        return JsonResponse({"type":"access_error","reason":"card_unown"})
     
-    if(numCard.machine_user is in numModule.machine_user.all())
-        return JsonResponse('{“type”:”access_answer”,“access”:“granted”}')
-    else 
-        return JsonResponse('{“type”:“access_answer”,“access”:“denied”}')
+    if(numCard.machine_user in numModule.machine_user.all()):
+        return JsonResponse({"type":"access_answer","access":"granted"})
+    else :
+        return JsonResponse({"type":"access_answer","access":"denied"})
 
+#detail user
 @login_required(login_url='/fablab/index2')
 def detail_user(request, user_name):
 	context = {}
@@ -228,6 +243,7 @@ def detail_user(request, user_name):
 	context = { 'user': user , 'machine_list' : machine_list }
 	return render(request, 'fablab/user-details.html', context)
 
+#detail card
 @login_required(login_url='/fablab/index2')
 def detail_card(request, card_id):
 	context = {}
@@ -266,29 +282,41 @@ def detail2(request):
     machine_name = request.GET['machine_name']
     return HttpResponse("You're looking at machine %s." % machine_name)
 
-# //////////////////////////////////// new user, new machine, new card & delete //////////////////////
 
+
+
+# //////////////////////////////////// new user, new machine, new card //////////////////////
+
+#new user
 @login_required(login_url='/fablab/index2')
 def new_user(request):
 	form = RegisterFormUser(request.POST)
 	return render(request, 'fablab/new-user.html', {'form': form})
 
+#new machine
 @login_required(login_url='/fablab/index2')
 def new_machine(request):
 	form = RegisterFormMachine(request.POST)
 	return render(request, 'fablab/new-machine.html', {'form': form})
 
+#new card
 @login_required(login_url='/fablab/index2')
 def new_card(request):
-	form = RegisterFormMachine(request.POST)
+	form = RegisterFormCard(request.POST)
 	return render(request, 'fablab/new-card.html', {'form': form})
 
+
+# //////////////////////////////////// delete user, machine and card //////////////////////
+
+
+#delete machine
 @login_required(login_url='/fablab/index2')
 def delete_machine(request, machine_name):
 	m = Machine.objects.get(machine_name__exact = machine_name)
 	m.delete()
 	return HttpResponseRedirect('/fablab/machines/')
 
+#delete user
 @login_required(login_url='/fablab/index2')
 def delete_user(request, user):
 	u = user.split()
@@ -296,41 +324,19 @@ def delete_user(request, user):
 	u.delete()
 	return HttpResponseRedirect('/fablab/users/')
 
-
-# /////////////////////////////////////////// remove user, machine and card //////////////////////////
-
+#delete card
 @login_required(login_url='/fablab/index2')
-def remove_user_from_machine(request, user, machine_name):
-	u = user.split()
-	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
-	m = Machine.objects.get(machine_name__exact = machine_name)
-	m.machine_user.remove(u[0])
-	the_url = '/fablab/machines/'+machine_name
-	return HttpResponseRedirect(the_url)
+def delete_card(request, card_id):
+	card = CardID.objects.get(cardID__exact = card_id)
+	card.delete()
+	return HttpResponseRedirect('/fablab/cards/')
 
-@login_required(login_url='/fablab/index2')
-def remove_user_from_card(request, user, card_id):
-	u = user.split()
-	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
-	#m = Machine.objects.get(machine_name__exact = machine_name)
-	c = CardID.objects.get(cardID=card_id)
-	c.machine_user=None
-	c.save()
-	the_url = '/fablab/cards/'+card_id
-	return HttpResponseRedirect(the_url)
 
-@login_required(login_url='/fablab/index2')
-def remove_machine_from_user(request, user, machine_name):
-	u = user.split()
-	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
-	m = Machine.objects.get(machine_name__exact = machine_name)
-	m.machine_user.remove(u[0])
-	the_url = '/fablab/users/'+user
-	return HttpResponseRedirect(the_url)
 
 
 # ////////////////////////////////// add machine, user and card /////////////////////////
 
+#add machine machine to user
 @login_required(login_url='/fablab/index2')
 def add_machine_to_user(request, user, machine_name):
 	u = user.split()
@@ -343,6 +349,7 @@ def add_machine_to_user(request, user, machine_name):
 	the_url = '/fablab/users/'+user
 	return HttpResponseRedirect(the_url)
 
+#add user to machine
 @login_required(login_url='/fablab/index2')
 def add_user_to_machine(request, user, machine_name):
 	u = user.split()
@@ -354,12 +361,12 @@ def add_user_to_machine(request, user, machine_name):
 	the_url = '/fablab/machines/'+machine_name
 	return HttpResponseRedirect(the_url)
 
+#add user to card
 @login_required(login_url='/fablab/index2')
 def add_user_to_card(request, user, card_id):
 	u = user.split()
 	user_name = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
 	card = CardID.objects.get(cardID__exact = card_id)
-	#card_set = user_name[0].cardid_set.all()
 	
 	if card.machine_user is None:
 		if user_name:
@@ -368,6 +375,7 @@ def add_user_to_card(request, user, card_id):
 	the_url = '/fablab/cards/'+card_id
 	return HttpResponseRedirect(the_url)
 
+#add machine to card
 @login_required(login_url='/fablab/index2')
 def add_machine_to_card(request, machine_name, card_id):
 	u = user.split()
@@ -378,4 +386,43 @@ def add_machine_to_card(request, machine_name, card_id):
 		card.machine.add(user_name[0])
 	the_url = '/fablab/cards/'+card_id
 	return HttpResponseRedirect(the_url)
+
+
+
+
+# /////////////////////////////////////////// remove user, machine and card //////////////////////////
+
+#remove user from machine
+@login_required(login_url='/fablab/index2')
+def remove_user_from_machine(request, user, machine_name):
+	u = user.split()
+	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	m = Machine.objects.get(machine_name__exact = machine_name)
+	m.machine_user.remove(u[0])
+	the_url = '/fablab/machines/'+machine_name
+	return HttpResponseRedirect(the_url)
+
+#remove user from card
+@login_required(login_url='/fablab/index2')
+def remove_user_from_card(request, user, card_id):
+	u = user.split()
+	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	c = CardID.objects.get(cardID=card_id)
+	c.machine_user=None
+	c.save()
+	the_url = '/fablab/cards/'+card_id
+	return HttpResponseRedirect(the_url)
+
+#remove machine from user
+@login_required(login_url='/fablab/index2')
+def remove_machine_from_user(request, user, machine_name):
+	u = user.split()
+	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	m = Machine.objects.get(machine_name__exact = machine_name)
+	m.machine_user.remove(u[0])
+	the_url = '/fablab/users/'+user
+	return HttpResponseRedirect(the_url)
+
+
+
 
