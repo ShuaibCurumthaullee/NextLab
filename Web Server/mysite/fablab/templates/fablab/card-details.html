@@ -129,7 +129,7 @@
 									
 									<div class="sidebar-widget">
 										
-										<form method="POST" name="myform" action="/fablab/add_user_to_machine?action=contact_agent&agent_id="  onsubmit="SetData()">
+										<form method="POST" name="myform" action="/fablab/add_user_to_card?action=contact_agent&agent_id="  onsubmit="SetData()">
 											{% csrf_token %}
 											
 											<select name="agent" id="agent">
@@ -148,8 +148,8 @@
 											function SetData(){
 											   var select = document.getElementById('agent');
 											   var agent_id = select.options[select.selectedIndex].value;
-											   var machine = "{{machine}}";
-											   document.myform.action = "/fablab/add_user_to_machine/"+machine+"/"+agent_id+"/" ; 
+											   var cardID = "{{cardID}}";
+											   document.myform.action = "/fablab/add_user_to_card/"+agent_id+"/"+cardID+"/" ; 
 											   myform.submit();
 											}
 										</script>
@@ -178,7 +178,7 @@
 											<a href="/fablab/users/{{ c_user }}/">{{ c_user }}</a>
 										</div> <!-- end col-md-8 -->
 										<div class="col-md-4">
-											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove user</a>
+											<a href="/fablab/remove_user_from_card/{{ c_user }}/{{ cardID }}">Remove user</a>
 										</div> <!-- end col-md-4 -->
 									</p>
 								</div>
@@ -186,23 +186,7 @@
 							
 						</div> <!-- end .related-products -->
 						
-						<div class="related-products">
-							<h3 class="text-center">Machines</h3>
-							
-							{% for c_machine in cardID.machine_set.all %}
-								<div class="product-description">
-									<p>
-										<div class="col-md-8">
-											<a href="/fablab/users/{{ m_user }}/">{{ c_machine }}</a>
-										</div> <!-- end col-md-8 -->
-										<div class="col-md-4">
-											<a href="/fablab/remove_user_from_machine/{{ m_user }}/{{ machine }}">Remove machine</a>
-										</div> <!-- end col-md-4 -->
-									</p>
-								</div>
-							{% endfor %}
-							
-						</div> <!-- end .related-products -->
+						<br> <br>
 						
 					</div> <!-- end .box -->
 				</div> <!-- end .container -->
