@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render, render_to_response
 
 from django.template import RequestContext
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -13,6 +13,9 @@ from .models import Machine, Machine_User, CardID
 
 from .forms import RegisterFormUser, RegisterFormMachine
 
+from django.views.decorators.csrf import csrf_exempt
+
+import json
 
 def index(request):
     latest_machine_list = Machine.objects.order_by('-machine_name')
@@ -183,35 +186,37 @@ def detail_machine(request, machine_name):
 	context = { 'machine': machine , 'machine_users' : machine_users , 'user_list': user_list}
 	return render(request, 'fablab/machine-details.html', context)
 
+@csrf_exempt
 def access_machine(request):
-	context = {}
-	try:
+    context = {}
+    print(request.body)
+    try:
         body = json.loads(request.body)
         if body["type"] == "access_demand":
             cardID = body["card_uid"]
             module_id = body["module_id"]
-    except json.JSONDecodeError:
-        raise Http400("Bad request")
+    except ValueError:
+        return HttpResponseBadRequest()
     except KeyError:
-        raise Http400("Bad request")
+        return HttpResponseBadRequest()
     
-	try:
+    try:
         numModule = Machine.objects.get(machine_id__exact = module_id)
     except Machine.DoesNotExist:
-        return JsonResponse ('{"type":"access_error","reason":"module_unknown"}')
+        return JsonResponse ({"type":"access_error","reason":"module_unknown"})
     
     try:
         numCard = CardID.objects.get(cardID__exact = cardID)
     except CardID.DoesNotExist:
-        return JsonResponse('{“type”:“access_error”,“reason”:“card_unknown”}')
+        return JsonResponse({"type":"access_error","reason":"card_unknown"})
     
-    if(numCard.machine_user == None)
-        return JsonResponse('{“type”:“access_error”,“reason”:“card_unown”}')
+    if(numCard.machine_user is None):
+        return JsonResponse({"type":"access_error","reason":"card_unown"})
     
-    if(numCard.machine_user is in numModule.machine_user.all())
-        return JsonResponse('{“type”:”access_answer”,“access”:“granted”}')
-    else 
-        return JsonResponse('{“type”:“access_answer”,“access”:“denied”}')
+    if(numCard.machine_user in numModule.machine_user.all()):
+        return JsonResponse({"type":"access_answer","access":"granted"})
+    else :
+        return JsonResponse({"type":"access_answer","access":"denied"})
 
 @login_required(login_url='/fablab/index2')
 def detail_user(request, user_name):
