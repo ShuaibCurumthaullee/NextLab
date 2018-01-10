@@ -27,7 +27,7 @@ def index2(request):
     context = { 'latest_machine_list': latest_machine_list }
     return render(request, 'fablab/index2.html', context)
 
-# /////////////////////////// login, logout and register //////////////////////////////////
+# /////////////////////////// login, logout and register machine, user and card //////////////////////////////////
 
 #login
 def login_view(request):
@@ -70,7 +70,7 @@ def login_view(request):
         # blank dictionary object...
         return HttpResponseRedirect('/fablab/index2/')
 
-#regiqter user
+#register user
 @login_required(login_url='/fablab/index2')
 def register_user(request):
 	# if this is a POST request we need to process the form data
@@ -108,13 +108,12 @@ def register_machine(request):
 		if form.is_valid():
 			# process the data in form.cleaned_data as required
 			machineName = form.cleaned_data['machineName']
+			machine_id = form.cleaned_data['machine_id']
 			machine = Machine.objects.filter(machine_name__exact = machineName)
 			if machine.exists():
 				return HttpResponse("This machine already exists")
 			else:
-				#u = Machine_User.objects.filter(first_name__exact='Kali', last_name__exact='Linux')
-				#m = Machine(machine_name=machineName, machine_user=u[0])
-				m = Machine(machine_name=machineName)
+				m = Machine(machine_name = machineName, machine_id = machine_id)
 				
 				m.save()
 				# redirect to a new URL:
@@ -125,6 +124,36 @@ def register_machine(request):
 		form = RegisterFormMachine()
 
 	return render(request, 'fablab/new-machine.html', {'form': form})
+
+#register card
+@login_required(login_url='/fablab/index2')
+def register_card(request):
+	# if this is a POST request we need to process the form data
+	if request.method == 'POST':
+		# create a form instance and populate it with data from the request:
+		form = RegisterFormCard(request.POST)
+		# check whether it's valid:
+		if form.is_valid():
+			# process the data in form.cleaned_data as required
+			cardNumber = form.cleaned_data['cardNumber']
+			#machine = Machine.objects.filter(machine_name__exact = machineName)
+			cardNumber = CardID.objects.filter(cardID__exact = cardNumber)
+			if cardNumber.exists():
+				return HttpResponse("This card number already exists")
+			else:
+				#u = Machine_User.objects.filter(first_name__exact='Kali', last_name__exact='Linux')
+				#m = Machine(machine_name=machineName, machine_user=u[0])
+				c = CardID(cardID = cardNumber)
+				
+				c.save()
+				# redirect to a new URL:
+				return HttpResponseRedirect('/fablab/cards/')
+				
+	# if a GET (or any other method) we'll create a blank form
+	else:
+		form = RegisterFormMachine()
+
+	return render(request, 'fablab/new-card.html', {'form': form})
 
 #logout
 @login_required(login_url='/fablab/index2')
@@ -335,7 +364,7 @@ def delete_card(request, card_id):
 
 
 
-# ////////////////////////////////// add machine, user and card /////////////////////////
+# ////////////////////////////////// add machine to user , add user to ... /////////////////////////
 
 #add machine machine to user
 @login_required(login_url='/fablab/index2')
@@ -391,7 +420,7 @@ def add_machine_to_card(request, machine_name, card_id):
 
 
 
-# /////////////////////////////////////////// remove user, machine and card //////////////////////////
+# /////////////////////////////////////////// remove user from machine, remove machine from ... //////////////////////////
 
 #remove user from machine
 @login_required(login_url='/fablab/index2')
@@ -424,6 +453,25 @@ def remove_machine_from_user(request, user, machine_name):
 	the_url = '/fablab/users/'+user
 	return HttpResponseRedirect(the_url)
 
+
+
+
+# /////////////////////////////////////////// Change user's name, change machine's name ... //////////////////////////
+
+
+#Change user's name
+@login_required(login_url='/fablab/index2')
+def change_user_name(request, old_user_name, new_user_name):
+	old_u = old_user_name.split()
+	new_u = new_user_name.split()
+	u = Machine_User.objects.get(first_name__exact=old_u[0], last_name__exact=old_u[1])
+	u.first_name = new_u[0]
+	u.last_name = new_u[1]
+	u.save()
+	print(u)
+	the_url = '/fablab/users/'+new_user_name
+	print(the_url)
+	return HttpResponseRedirect(the_url)
 
 
 

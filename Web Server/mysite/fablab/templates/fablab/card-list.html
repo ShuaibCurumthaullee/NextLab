@@ -2,10 +2,11 @@
 	{% block context %}
 	
 		{% load static %}
+
 		<div class="page-title" style="background-image: url({% static 'fablab/images/background16.jpg' %});">
 			<div class="inner">
-				<h2>Manage your machines</h2>
-				<a href="/fablab/new-machine/" class="button">+ Add New Machine</a>
+				<h2>Manage your cards</h2>
+				<a href="/fablab/new-machine/" class="button">+ Add New Card</a>
 			</div> <!-- end .inner -->
 		</div> <!-- end .page-title -->
 
@@ -17,19 +18,19 @@
 
 								<div class="row products">
 									
-									{% if machine_list %}
+									{% if card_list %}
 										<ul>
 									
-										{% for machine in machine_list %}
+										{% for card in card_list %}
 											
 											<div class="col-sm-4">
 												<div class="product">
 													<img src="{% static 'fablab/images/product07.jpg' %}" alt="image" class="img-responsive">
 													<div class="overlay"></div>
 													<div class="content">
-														<h3><a href="/fablab/machines/{{ machine.machine_name }}/">{{ machine.machine_name }}</a></h3>
+														<h3><a href="/fablab/cards/{{ card.cardID }}/">{{ card.cardID }}</a></h3>
 													</div> <!-- end .content -->
-													<a href="/fablab/machines/{{ machine.machine_name }}/" class="button">Details</a>
+													<a href="/fablab/cards/{{ card.cardID }}/" class="button">Details</a>
 												</div> <!-- end .product -->
 											</div> <!-- end .col-sm-6 -->
 										
@@ -37,7 +38,7 @@
 										
 										</ul>
 									{% else %}
-										<p>No machines are available.</p>
+										<p>No cards are available.</p>
 									{% endif %}
 									
 								</div> <!-- end .row -->
