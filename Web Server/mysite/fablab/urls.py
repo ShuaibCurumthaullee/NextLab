@@ -33,6 +33,9 @@ urlpatterns = [
     # /register-machine
     url(r'^register-machine/$', views.register_machine),
     
+    # /register-card
+    url(r'^register-card/$', views.register_card),
+    
     # /machines
     url(r'^machines/$', views.machines, name='machines'),
     
@@ -62,6 +65,13 @@ urlpatterns = [
     
     # /delete_user/<user_name>
     url(r'^delete_user/(?P<user>[\w|\W]+)/$', views.delete_user),
+    
+    # /delete_card/<card_number>
+    url(r'^delete_card/(?P<card_id>[\w|\W]+)/$', views.delete_card),
+    
+    
+    # /change_username/<old_user_name>/new_user_name
+    url(r'^change_username/(?P<old_user_name>[\w|\W]+)/(?P<new_user_name>[\w|\W]+)/$', views.change_user_name),
     
     
     # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
