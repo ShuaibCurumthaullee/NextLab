@@ -1,4 +1,6 @@
 ﻿{% extends 'fablab/base.html' %}
+	
+	{% block title %}<title>User information</title>{% endblock title%}
 	{% block context %}
 	
 		{% load static %}
@@ -77,7 +79,8 @@
 										            <div class="modal-body">
 														
 														
-														<form class="form-horizontal" onsubmit="ChangeName()">
+														<form method="POST" name="formChangeName" class="form-horizontal" onsubmit="ChangeName()">
+															{% csrf_token %}
 															<div class="form-group">
 																<label class="col-sm-3 control-label">Firstname:</label>
 																<div class="col-sm-8">
@@ -90,23 +93,14 @@
 															</div>
 															<button type="submit" class="btn btn-primary">Submit</button>
 														</form>
-														
-														
-										            </div>
-										            <div class="modal-footer">
-										                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										                <!--input type="button" onclick="location.href='/fablab/';" value="Submit" /-->
-										                <button type="button" class="btn btn-primary">Submit</button>
-										                <script>
+														<script>
 															function ChangeName(){
 																var firstname = document.getElementById("firstname").value;
 																var lastname = document.getElementById("lastname").value;
-																var name = firstname+lastname;
 																var user = "{{user}}";
-																document.myform.action = "/fablab/change_username/"+user+"/"+firstname+" "+lastname+"/" ; 
-																myform.submit();
+																document.formChangeName.action = "/fablab/change_username/"+user+"/"+firstname+" "+lastname+"/" ; 
+																formChangeName.submit();
 															}
-										                
 										                </script>
 										                
 										            </div>

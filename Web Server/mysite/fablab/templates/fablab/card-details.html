@@ -1,4 +1,6 @@
 ﻿{% extends 'fablab/base.html' %}
+	
+	{% block title %}<title>Card information</title>{% endblock title%}
 	{% block context %}
 	
 		{% load static %}
@@ -41,7 +43,8 @@
 									
 									<div class="sidebar-widget">
 										
-										<form method="POST" name="myform" action="/fablab/add_user_to_card?action=contact_agent&agent_id="  onsubmit="SetData()">
+										<!--form method="POST" name="myform" action="/fablab/add_user_to_card?action=contact_agent&agent_id="  onsubmit="SetData()"-->
+										<form method="POST" name="myform" action="/fablab/add_user_to_card?action=contact_agent&agent_id="  ">
 											{% csrf_token %}
 											
 											<select name="agent" id="agent">

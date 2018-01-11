@@ -1,4 +1,6 @@
 ﻿{% extends 'fablab/base.html' %}
+	
+	{% block title %}<title>Machine information</title>{% endblock title%}
 	{% block context %}
 	
 		{% load static %}
@@ -103,7 +105,12 @@
 									                <h4 class="modal-title" id="myModalLabel">Modification of Machine</h4>
 									            </div>
 									            <div class="modal-body">
-													<form class="form-horizontal">
+													
+													
+													
+													<!--form method="POST" name="formChangeName" class="form-horizontal" onsubmit="ChangeName()"-->
+													<form method="POST" name="formChangeName" class="form-horizontal" ">
+														{% csrf_token %}
 														<div class="form-group">
 															<label class="col-sm-2 control-label">Name:</label>
 															<div class="col-sm-9">
@@ -116,7 +123,19 @@
 																<input type="text" class="form-control" placeholder="Type machine's ID...">
 															</div>	
 														</div>
+														<button type="submit" class="btn btn-primary">Submit</button>
 													</form>
+													
+													<script>
+														function ChangeName(){
+															var machineName = document.getElementById("firstname").value;
+															var machineId = document.getElementById("lastname").value;
+															var user = "{{user}}";
+															document.formChangeName.action = "/fablab/change_username/"+user+"/"+firstname+" "+lastname+"/" ; 
+															formChangeName.submit();
+														}
+									                </script>
+													
 									            </div>
 									            <div class="modal-footer">
 									                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

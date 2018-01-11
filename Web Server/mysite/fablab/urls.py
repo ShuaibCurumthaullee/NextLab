@@ -73,6 +73,12 @@ urlpatterns = [
     # /change_username/<old_user_name>/new_user_name
     url(r'^change_username/(?P<old_user_name>[\w|\W]+)/(?P<new_user_name>[\w|\W]+)/$', views.change_user_name),
     
+    # /change_machine_details/old_machine_name/old_machine_id/new_machine_name/new_machine_id
+    url(r'^change_machine_details/(?P<old_machine_name>[\w|\W]+)/(?P<old_machine_id>[\w|\W]+)/(?P<new_machine_name>[\w|\W]+)/(?P<new_machine_id>[\w|\W]+)/$', views.change_machine_details),
+    
+    # /change_card_details/<old_user_name>/new_user_name
+    url(r'^change_username/(?P<old_user_name>[\w|\W]+)/(?P<new_user_name>[\w|\W]+)/$', views.change_user_name),
+    
     
     # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
     url(r'^add_machine_to_user/(?P<machine_name>[\w|\W]+)/(?P<user>[\w|\W]+)/$', views.add_machine_to_user),

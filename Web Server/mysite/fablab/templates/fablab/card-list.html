@@ -1,4 +1,6 @@
 ﻿{% extends 'fablab/base.html' %}
+	
+	{% block title %}<title>List of cards</title>{% endblock title%}
 	{% block context %}
 	
 		{% load static %}
@@ -6,7 +8,7 @@
 		<div class="page-title" style="background-image: url({% static 'fablab/images/background16.jpg' %});">
 			<div class="inner">
 				<h2>Manage your cards</h2>
-				<a href="/fablab/new-machine/" class="button">+ Add New Card</a>
+				<a href="/fablab/new-card/" class="button">+ Add New Card</a>
 			</div> <!-- end .inner -->
 		</div> <!-- end .page-title -->
 
