@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-from .models import Machine, Machine_User, CardID
+from .models import Machine, Machine_User, CardID, Logs
 
 from .forms import RegisterFormUser, RegisterFormMachine, RegisterFormCard
 
@@ -116,7 +116,7 @@ def register_machine(request):
 			if machine.exists():
 				return HttpResponse("This machine already exists")
 			else:
-				m = Machine(machine_name = machineName, machine_id = machine_id)
+				m = Machine(machine_name = machineName, machine_id = machine_id, machine_status="Available")
 				print(m)
 				m.save()
 				# redirect to a new URL:
@@ -166,7 +166,7 @@ def logout_view(request):
     return HttpResponseRedirect('/fablab/index2/')
 
 
-# ////////////////////////////////////////// List users, machines and cards ////////////////////////////
+# ////////////////////////////////////////// Users, machines, cards, dashboard, logs ////////////////////////////
 
 
 #user-list
@@ -201,6 +201,31 @@ def cards(request):
 	except CardID.DoesNotExist:
 		raise Http404("You have no card listed.")
 	return render(request, 'fablab/card-list.html', context)
+
+#dashboard
+@login_required(login_url='/fablab/index2')
+def dashboard(request):
+	ontext = {}
+	try:
+		machine_list = Machine.objects.order_by('id')
+		context = { 'machine_list': machine_list }
+	except Machine.DoesNotExist:
+		raise Http404("You have no machines listed.")
+	return render(request, 'fablab/dashboard.html', context)
+
+#logs
+@login_required(login_url='/fablab/index2')
+def logs(request):
+	context = {}
+	duration = {}
+	try:
+		logs = Logs.objects.order_by('id')
+		context = { 'logs': logs }
+		duration = logs[0].finish_time - logs[0].start_time
+		print(duration)
+	except Machine.DoesNotExist:
+		raise Http404("You have no logs yet.")
+	return render(request, 'fablab/logs.html', context)
 
 
 
@@ -395,13 +420,15 @@ def add_user_to_machine(request, user, machine_name):
 @login_required(login_url='/fablab/index2')
 def add_user_to_card(request, user, card_id):
 	u = user.split()
-	user_name = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	user = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
 	card = CardID.objects.get(cardID__exact = card_id)
 	
-	if card.machine_user is None:
-		if user_name:
-			card.machine_user = user_name[0]
-			card.save()
+	#if card.machine_user is None:
+	if user:
+		user = user[0]
+		#card.machine_user = user
+		user.cardid_set.add(card)
+		user.save()
 	the_url = '/fablab/cards/'+card_id
 	return HttpResponseRedirect(the_url)
 
@@ -443,6 +470,17 @@ def remove_user_from_card(request, user, card_id):
 	the_url = '/fablab/cards/'+card_id
 	return HttpResponseRedirect(the_url)
 
+#remove card from user
+@login_required(login_url='/fablab/index2')
+def remove_card_from_user(request, user, card_id):
+	u = user.split()
+	u = Machine_User.objects.filter(first_name__exact=u[0], last_name__exact=u[1])
+	c = CardID.objects.get(cardID=card_id)
+	c.machine_user=None
+	c.save()
+	the_url = '/fablab/users/'+user
+	return HttpResponseRedirect(the_url)
+
 #remove machine from user
 @login_required(login_url='/fablab/index2')
 def remove_machine_from_user(request, user, machine_name):
@@ -469,9 +507,7 @@ def change_user_name(request, old_user_name, new_user_name):
 		u.first_name = new_u[0]
 		u.last_name = new_u[1]
 		u.save()
-		#print(u)
 		the_url = '/fablab/users/'+new_user_name
-		#print(the_url)
 		return HttpResponseRedirect(the_url)
 	else:
 		return HttpResponseRedirect('/fablab/users/')
@@ -480,36 +516,33 @@ def change_user_name(request, old_user_name, new_user_name):
 @login_required(login_url='/fablab/index2')
 def change_machine_details(request, old_machine_name, old_machine_id, new_machine_name, new_machine_id):
 	if request.method == 'POST':
-		old_m_n = old_machine_name.split()
-		new_m_n = new_machine_name.split()
-		m = Machine_User.objects.get(machine_name__exact=old_m_n[0], last_name__exact=old_m_n[1])
-		u.first_name = new_u[0]
-		u.last_name = new_u[1]
-		u.save()
-		#print(u)
-		the_url = '/fablab/users/'+new_user_name
-		#print(the_url)
+		m = Machine.objects.get(machine_name__exact=old_machine_name)
+		print(m)
+		print(old_machine_name)
+		print(new_machine_name)
+		print(old_machine_id)
+		print(new_machine_id)
+		m.machine_name = new_machine_name
+		if old_machine_id != new_machine_id:
+			m.machine_id = new_machine_id
+		m.save()
+		the_url = '/fablab/machines/'+new_machine_name
 		return HttpResponseRedirect(the_url)
 	else:
-		return HttpResponseRedirect('/fablab/users/')
+		return HttpResponseRedirect('/fablab/machines/')
 
 
 #Change card details
 @login_required(login_url='/fablab/index2')
-def change_user_name(request, old_user_name, new_user_name):
+def change_card_details(request, old_card_number, new_card_number):
 	if request.method == 'POST':
-		old_u = old_user_name.split()
-		new_u = new_user_name.split()
-		u = Machine_User.objects.get(first_name__exact=old_u[0], last_name__exact=old_u[1])
-		u.first_name = new_u[0]
-		u.last_name = new_u[1]
-		u.save()
-		#print(u)
-		the_url = '/fablab/users/'+new_user_name
-		#print(the_url)
+		c = CardID.objects.get(cardID = old_card_number)
+		c.cardID = new_card_number
+		c.save()
+		the_url = '/fablab/cards/'+new_card_number
 		return HttpResponseRedirect(the_url)
 	else:
-		return HttpResponseRedirect('/fablab/users/')
+		return HttpResponseRedirect('/fablab/cards/')
 
 
 

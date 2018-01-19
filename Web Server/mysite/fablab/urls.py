@@ -48,6 +48,12 @@ urlpatterns = [
     # /new-machine
     url(r'^new-machine/$', views.new_machine),
     
+    # /dashboard
+    url(r'^dashboard/$', views.dashboard),
+    
+    # /logs
+    url(r'^logs/$', views.logs),
+    
     
     
     
@@ -76,8 +82,8 @@ urlpatterns = [
     # /change_machine_details/old_machine_name/old_machine_id/new_machine_name/new_machine_id
     url(r'^change_machine_details/(?P<old_machine_name>[\w|\W]+)/(?P<old_machine_id>[\w|\W]+)/(?P<new_machine_name>[\w|\W]+)/(?P<new_machine_id>[\w|\W]+)/$', views.change_machine_details),
     
-    # /change_card_details/<old_user_name>/new_user_name
-    url(r'^change_username/(?P<old_user_name>[\w|\W]+)/(?P<new_user_name>[\w|\W]+)/$', views.change_user_name),
+    # /change_card_details/<old_card_number>/new_card_number
+    url(r'^change_card_details/(?P<old_card_number>[\w|\W]+)/(?P<new_card_number>[\w|\W]+)/$', views.change_card_details),
     
     
     # /add_machine_to_user/{{ machine.machine_name }}/ {{ user }}
@@ -97,6 +103,9 @@ urlpatterns = [
     
     # /remove_user_from_card
     url(r'^remove_user_from_card/(?P<user>[\w|\W]+)/(?P<card_id>\w+)/$', views.remove_user_from_card),
+    
+    # /remove_card_from_card
+    url(r'^remove_card_from_user/(?P<user>[\w|\W]+)/(?P<card_id>\w+)/$', views.remove_card_from_user),
     
     # /login/
     url(r'^login/$', views.login_view, name='login'),
