@@ -126,6 +126,21 @@
 									{% endfor %}
 										
 								</div> <!-- end .related-products -->
+								
+								<div class="related-products">
+									<h3 class="text-center">Cards</h3>
+									{% for card in user.cardid_set.all %}
+										<div class="product-description">
+											<div class="col-md-7">
+												<a href="/fablab/cards/{{ card }}/">{{ card }}</a>
+											</div> <!-- end col-md-7 -->
+											<div class="col-md-5">
+												<a href="/fablab/remove_card_from_user/{{ user }}/{{ card }}">Remove user</a>
+											</div> <!-- end col-md-5 -->
+										</div>
+									{% endfor %}
+										
+								</div> <!-- end .related-products -->
 
 						</div> <!-- end .row -->
 					</div> <!-- end .box -->

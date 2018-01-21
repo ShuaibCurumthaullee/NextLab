@@ -93,7 +93,7 @@
 									</div> <!-- end .product-info -->
 
 									<div class="product-info">
-										<a class="button" data-toggle="modal" data-target="#myModal">Modify machine</a>
+										<a class="button" data-toggle="modal" data-target="#myModal">Modify machine details</a>
 									</div> <!-- end .product-info -->
 									
 									<!-- modal -->
@@ -108,38 +108,39 @@
 													
 													
 													
-													<!--form method="POST" name="formChangeName" class="form-horizontal" onsubmit="ChangeName()"-->
-													<form method="POST" name="formChangeName" class="form-horizontal" ">
+													<form method="POST" name="formChangeDetails" class="form-horizontal" onsubmit="ChangeDetails()">
 														{% csrf_token %}
 														<div class="form-group">
 															<label class="col-sm-2 control-label">Name:</label>
 															<div class="col-sm-9">
-																<input type="text" class="form-control" placeholder="Type machine's name...">
+																<input type="text" id="machine's name" class="form-control" placeholder="Machine's name...">
 															</div>	
 														</div>
 														<div class="form-group">
 															<label class="col-sm-2 control-label">ID:</label>
 															<div class="col-sm-9">
-																<input type="text" class="form-control" placeholder="Type machine's ID...">
+																<input type="text" id="machine's id" class="form-control" placeholder="Module's ID...">
 															</div>	
 														</div>
 														<button type="submit" class="btn btn-primary">Submit</button>
 													</form>
 													
 													<script>
-														function ChangeName(){
-															var machineName = document.getElementById("firstname").value;
-															var machineId = document.getElementById("lastname").value;
-															var user = "{{user}}";
-															document.formChangeName.action = "/fablab/change_username/"+user+"/"+firstname+" "+lastname+"/" ; 
-															formChangeName.submit();
+														function ChangeDetails(){
+															var machineName = document.getElementById("machine's name").value;
+															var machineId = document.getElementById("machine's id").value;
+															if (machineId == "") { machineId = "{{ machine.machine_id }}"; };
+															if (machineName == "") { machineName = "{{ machine.machine_name }}"; };
+															var old_machine_name = "{{machine.machine_name}}";
+															var old_machine_id = "{{machine.machine_id}}";
+															document.formChangeDetails.action = "/fablab/change_machine_details/"+old_machine_name+"/"+old_machine_id+"/"+machineName+"/"+machineId+"/" ;
+															formChangeDetails.submit();
 														}
 									                </script>
 													
 									            </div>
 									            <div class="modal-footer">
 									                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-									                <button type="button" class="btn btn-primary">Submit</button>
 									            </div>
 									        </div><!-- /.modal-content -->
 									    </div><!-- /.modal-dialog -->

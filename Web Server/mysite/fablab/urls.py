@@ -54,6 +54,9 @@ urlpatterns = [
     # /logs
     url(r'^logs/$', views.logs),
     
+    # /update_machine_status
+    url(r'^update_machine_status/$', views.update_machine_status),
+    
     
     
     

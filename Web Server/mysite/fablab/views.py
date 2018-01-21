@@ -15,7 +15,7 @@ from .forms import RegisterFormUser, RegisterFormMachine, RegisterFormCard
 
 from django.views.decorators.csrf import csrf_exempt
 
-import json, time
+import json, time, datetime
 
 def index(request):
     latest_machine_list = Machine.objects.order_by('-machine_name')
@@ -218,11 +218,25 @@ def dashboard(request):
 def logs(request):
 	context = {}
 	duration = {}
+	logs = []
 	try:
-		logs = Logs.objects.order_by('id')
-		context = { 'logs': logs }
-		duration = logs[0].finish_time - logs[0].start_time
-		print(duration)
+		all_logs = Logs.objects.all()
+		for obj in all_logs:
+			if obj.finish_time is not None:
+				logs.append(obj)
+		#logs = Logs.objects.filter(finish_time != None)
+		if all_logs:
+			duration = logs[0].finish_time - logs[0].start_time
+			for obj in logs:
+				th = duration.seconds/3600
+				tm = duration.seconds/60 - th*60
+				ts = duration.seconds - th*3600 - tm*60
+				th = str(th)
+				tm = str(tm)
+				ts = str(ts)
+				duration = th + " h " + tm + " mins " + ts + " s"
+				obj.duration = duration
+			context = { 'logs': logs }
 	except Machine.DoesNotExist:
 		raise Http404("You have no logs yet.")
 	return render(request, 'fablab/logs.html', context)
@@ -259,28 +273,50 @@ def access_machine(request):
         if body["type"] == "access_demand":
             cardID = body["card_uid"]
             module_id = body["module_id"]
+            m = Machine.objects.filter(machine_id = module_id)
+            m.machine_status = "In use"
+            log = Logs(cardID = cardID, machine_id = module_id)
+            log.save()
+        elif body["type"] == "access_end":
+			module_id = body["module_id"]
     except ValueError:
         return HttpResponseBadRequest()
     except KeyError:
         return HttpResponseBadRequest()
     
-    try:
-        numModule = Machine.objects.get(machine_id__exact = module_id)
-    except Machine.DoesNotExist:
-        return JsonResponse ({"type":"access_error","reason":"module_unknown"})
-    
-    try:
-        numCard = CardID.objects.get(cardID__exact = cardID)
-    except CardID.DoesNotExist:
-        return JsonResponse({"type":"access_error","reason":"card_unknown"})
-    
-    if(numCard.machine_user is None):
-        return JsonResponse({"type":"access_error","reason":"card_unown"})
-    
-    if(numCard.machine_user in numModule.machine_user.all()):
-        return JsonResponse({"type":"access_answer","access":"granted"})
-    else :
-        return JsonResponse({"type":"access_answer","access":"denied"})
+    if body["type"] == "access_demand":
+		try:
+			numModule = Machine.objects.get(machine_id__exact = module_id)
+		except Machine.DoesNotExist:
+			return JsonResponse ({"type":"access_error","reason":"module_unknown"})
+		
+		try:
+			numCard = CardID.objects.get(cardID__exact = cardID)
+		except CardID.DoesNotExist:
+			return JsonResponse({"type":"access_error","reason":"card_unknown"})
+		
+		if(numCard.machine_user is None):
+			return JsonResponse({"type":"access_error","reason":"card_unown"})
+		
+		if(numCard.machine_user in numModule.machine_user.all()):
+			return JsonResponse({"type":"access_answer","access":"granted"})
+		else :
+			return JsonResponse({"type":"access_answer","access":"denied"})
+    elif body["type"] == "access_end":
+		m = Machine.objects.filter(machine_id = module_id)
+		m.machine_status = "Available"
+		log = Logs.objects.filter(machine_id__exact = module_id, finish_time = Null).distinct()
+		log[0].finish_time = datetime.timenow()
+		duration = logs[0].finish_time - logs[0].start_time
+		th = duration.seconds/3600
+		tm = duration.seconds/60 - th*60
+		ts = duration.seconds - th*3600 - tm*60
+		th = str(th)
+		tm = str(tm)
+		ts = str(ts)
+		duration = th + " h " + tm + " mins " + ts + " s"
+		obj.duration = duration
+		log[0].save()
 
 #detail user
 @login_required(login_url='/fablab/index2')
@@ -494,7 +530,7 @@ def remove_machine_from_user(request, user, machine_name):
 
 
 
-# /////////////////////////////////////////// Change user's name, change machine's name ... //////////////////////////
+# /////////////////////////////////////////// Change user's name, change machine's name ... , update machine status //////////////////////////
 
 
 #Change user's name
@@ -517,11 +553,6 @@ def change_user_name(request, old_user_name, new_user_name):
 def change_machine_details(request, old_machine_name, old_machine_id, new_machine_name, new_machine_id):
 	if request.method == 'POST':
 		m = Machine.objects.get(machine_name__exact=old_machine_name)
-		print(m)
-		print(old_machine_name)
-		print(new_machine_name)
-		print(old_machine_id)
-		print(new_machine_id)
 		m.machine_name = new_machine_name
 		if old_machine_id != new_machine_id:
 			m.machine_id = new_machine_id
@@ -544,5 +575,16 @@ def change_card_details(request, old_card_number, new_card_number):
 	else:
 		return HttpResponseRedirect('/fablab/cards/')
 
+#Update machine status
+@login_required(login_url='/fablab/index2')
+def update_machine_status(request):
+	machine_id = request.GET.get('machine_id', None)
+	print(machine_id)
+	print("here")
+	m = Machine.objects.filter(machine_id = machine_id)
+	data = {
+		'machine_status': m.machine_status
+	}
+	return JsonResponse(data)
 
 
