@@ -31,8 +31,8 @@ class CardID(models.Model):
         return self.cardID
 
 class Logs(models.Model):
-	cardID = models.OneToOneField(CardID, on_delete=models.CASCADE)
-	machine = models.OneToOneField(Machine, on_delete=models.CASCADE)
+	cardID = models.CharField(max_length=100)
+	machine = models.CharField(max_length=100)
 	start_time = models.DateTimeField(auto_now_add=True)
 	finish_time = models.DateTimeField(null=True)
-	duration = models.DateTimeField(null=True)
+	duration = models.CharField(null=True, max_length=100)

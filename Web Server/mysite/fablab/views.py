@@ -17,6 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 import json, time, datetime
 
+from django.utils import timezone
+
 def index(request):
     latest_machine_list = Machine.objects.order_by('-machine_name')
     context = { 'latest_machine_list': latest_machine_list }
@@ -226,18 +228,8 @@ def logs(request):
 				logs.append(obj)
 		#logs = Logs.objects.filter(finish_time != None)
 		if all_logs:
-			duration = logs[0].finish_time - logs[0].start_time
-			for obj in logs:
-				th = duration.seconds/3600
-				tm = duration.seconds/60 - th*60
-				ts = duration.seconds - th*3600 - tm*60
-				th = str(th)
-				tm = str(tm)
-				ts = str(ts)
-				duration = th + " h " + tm + " mins " + ts + " s"
-				obj.duration = duration
 			context = { 'logs': logs }
-	except Machine.DoesNotExist:
+	except Logs.DoesNotExist:
 		raise Http404("You have no logs yet.")
 	return render(request, 'fablab/logs.html', context)
 
@@ -258,11 +250,12 @@ def detail_machine(request, machine_name):
 	except Machine.DoesNotExist:
 		raise Http404("This machine does not exist")
 	
+
 	user_list = Machine_User.objects.order_by('id')
 	
 	context = { 'machine': machine , 'machine_users' : machine_users , 'user_list': user_list}
 	return render(request, 'fablab/machine-details.html', context)
-
+'''
 #access machine
 @csrf_exempt
 def access_machine(request):
@@ -273,12 +266,14 @@ def access_machine(request):
         if body["type"] == "access_demand":
             cardID = body["card_uid"]
             module_id = body["module_id"]
-            m = Machine.objects.filter(machine_id = module_id)
+            m = Machine.objects.get(machine_id = module_id)
             m.machine_status = "In use"
-            log = Logs(cardID = cardID, machine_id = module_id)
+            log = Logs(cardID = cardID, machine = m.machine_name)
             log.save()
         elif body["type"] == "access_end":
 			module_id = body["module_id"]
+    except Machine.DoesNotExist:
+	return JsonResponse ({"type":"access_error","reason":"module_unknown"})
     except ValueError:
         return HttpResponseBadRequest()
     except KeyError:
@@ -303,9 +298,9 @@ def access_machine(request):
 		else :
 			return JsonResponse({"type":"access_answer","access":"denied"})
     elif body["type"] == "access_end":
-		m = Machine.objects.filter(machine_id = module_id)
+		m = Machine.objects.get(machine_id = module_id)
 		m.machine_status = "Available"
-		log = Logs.objects.filter(machine_id__exact = module_id, finish_time = Null).distinct()
+		log = Logs.objects.filter(machine__exact = m.machine_name, finish_time = None).distinct()
 		log[0].finish_time = datetime.timenow()
 		duration = logs[0].finish_time - logs[0].start_time
 		th = duration.seconds/3600
@@ -317,6 +312,62 @@ def access_machine(request):
 		duration = th + " h " + tm + " mins " + ts + " s"
 		obj.duration = duration
 		log[0].save()
+'''
+
+#access machine
+@csrf_exempt
+def access_machine(request):
+    context = {}
+    print(request.body)
+    try:
+        body = json.loads(request.body)
+        if body["type"] == "access_demand":
+            cardID = body["card_uid"]
+            module_id = body["module_id"]
+            try:
+                numModule = Machine.objects.get(machine_id__exact = module_id)
+            except Machine.DoesNotExist:
+                return JsonResponse ({"type":"access_error","reason":"module_unknown"})
+            try:
+                numCard = CardID.objects.get(cardID__exact = cardID)
+            except CardID.DoesNotExist:
+                return JsonResponse({"type":"access_error","reason":"card_unknown"})
+            if(numCard.machine_user is None):
+                return JsonResponse({"type":"access_error","reason":"card_unown"})
+            if(numCard.machine_user in numModule.machine_user.all()):
+                numModule.machine_status = "In use"
+                numModule.save()
+                log = Logs(cardID = cardID, machine = module_id)
+                log.save()
+                return JsonResponse({"type":"access_answer","access":"granted"})
+            else :
+                return JsonResponse({"type":"access_answer","access":"denied"})
+           
+        elif body["type"] == "access_end":
+            module_id = body["module_id"]
+            m = Machine.objects.get(machine_id = module_id)
+            m.machine_status = "Available"
+            m.save()
+            log = Logs.objects.get(machine__exact = module_id, finish_time = None)
+            print(log)
+	    log.finish_time = timezone.now()
+            duration = log.finish_time - log.start_time
+            th = duration.seconds/3600
+            tm = duration.seconds/60 - th*60
+            ts = duration.seconds - th*3600 - tm*60
+            th = str(th)
+            tm = str(tm)
+            ts = str(ts)
+            duration = th + " h " + tm + " mins " + ts + " s"
+            log.duration = duration
+            log.save()
+            return HttpResponse("") 
+            
+    except ValueError:
+        return HttpResponseBadRequest()
+    except KeyError:
+        return HttpResponseBadRequest()
+
 
 #detail user
 @login_required(login_url='/fablab/index2')
